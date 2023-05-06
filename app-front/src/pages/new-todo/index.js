@@ -53,17 +53,19 @@ const AccountSettings = () => {
   }
 
   const { address, isConnected } = useAccount()
-  const { data: signer} = useSigner()
+  const { data: signer } = useSigner()
   const provider = useProvider()
 
-  const getProviderOrSigner = (needSigner) => {
-    if(needSigner){
+  const getProviderOrSigner = needSigner => {
+    if (needSigner) {
       return signer
-    }else{
+    } else {
       return provider
     }
   }
+
   // contract
+
   const contract = useContract({
     address: contractAddress,
     abi: abi,
@@ -91,7 +93,7 @@ const AccountSettings = () => {
           </TabList>
 
           <TabPanel sx={{ p: 0 }} value='new-todo'>
-            <NewTodo signer={signer} contract={contract} provider={provider}/>
+            <NewTodo signer={signer} contract={contract} provider={provider} />
           </TabPanel>
         </TabContext>
       </Card>

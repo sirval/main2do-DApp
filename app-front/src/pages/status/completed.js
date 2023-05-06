@@ -1,5 +1,7 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
+
 // ** MUI Imports
+
 import Grid from '@mui/material/Grid'
 import Link from '@mui/material/Link'
 import Card from '@mui/material/Card'
@@ -13,19 +15,21 @@ import WalletNotConnected from 'src/views/WalletConnected'
 const Completed = () => {
   const { address, isConnected } = useAccount()
 
-  const { data: signer} = useSigner()
+  const { data: signer } = useSigner()
   const [completedTodos, setCompletedTodos] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const provider = useProvider()
 
-  const getProviderOrSigner = (needSigner) => {
-    if(needSigner){
+  const getProviderOrSigner = needSigner => {
+    if (needSigner) {
       return signer
-    }else{
+    } else {
       return provider
     }
   }
+
   // contract
+
   const contract = useContract({
     address: contractAddress,
     abi: abi,
@@ -33,19 +37,19 @@ const Completed = () => {
   })
 
   const getCompletedTodos = async () => {
-    try{
+    try {
       setIsLoading(true)
       const _completedTodos = await contract.getTodosByStatus(2)
       setCompletedTodos(_completedTodos)
       setIsLoading(false)
-    }catch(err){
+    } catch (err) {
       console.log(err)
     }
   }
 
   useEffect(() => {
-    if(!signer) return
-    if(completedTodos.lenght !== [] && completedTodos.lenght !== 0) {
+    if (!signer) return
+    if (completedTodos.lenght !== [] && completedTodos.lenght !== 0) {
       getCompletedTodos()
     }
   }, [signer, completedTodos])
@@ -53,15 +57,10 @@ const Completed = () => {
   if (isConnected) {
     return (
       <Grid container spacing={6}>
-        
-
         <Grid item xs={12}>
           <Card>
             <CardHeader title='Completed 2Do' titleTypographyProps={{ variant: 'h6' }} />
-            {isLoading?
-              <CardCompleted pageName='completed' todos={completedTodos}/> :
-              <h3>Loading...</h3>
-            }
+            {isLoading ? <CardCompleted pageName='completed' todos={completedTodos} /> : <h3>Loading...</h3>}
           </Card>
         </Grid>
       </Grid>

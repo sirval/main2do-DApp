@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react'
 
-import {useState, useEffect} from 'react'
 // ** MUI Imports
+
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -13,19 +14,21 @@ import { abi, contractAddress } from 'src/constant'
 
 const Cancelled = () => {
   const { address, isConnected } = useAccount()
-  const { data: signer} = useSigner()
+  const { data: signer } = useSigner()
   const [cancelledTodos, setCancelledTodos] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const provider = useProvider()
 
-  const getProviderOrSigner = (needSigner) => {
-    if(needSigner){
+  const getProviderOrSigner = needSigner => {
+    if (needSigner) {
       return signer
-    }else{
+    } else {
       return provider
     }
   }
+
   // contract
+
   const contract = useContract({
     address: contractAddress,
     abi: abi,
@@ -33,31 +36,30 @@ const Cancelled = () => {
   })
 
   const getCancelledTodos = async () => {
-    try{
+    try {
       setIsLoading(true)
       const _cancelledTodos = await contract.getTodosByStatus(4)
       setCancelledTodos(_cancelledTodos)
       setIsLoading(false)
-    }catch(err){
+    } catch (err) {
       console.log(err)
     }
   }
 
   useEffect(() => {
-    if(!signer) return
-    if(cancelledTodos.lenght !== [] && cancelledTodos.lenght !== 0) {
+    if (!signer) return
+    if (cancelledTodos.lenght !== [] && cancelledTodos.lenght !== 0) {
       getCancelledTodos()
     }
   }, [signer, cancelledTodos])
-  
+
   if (isConnected) {
     return (
       <Grid container spacing={6}>
-      
         <Grid item xs={12}>
           <Card>
             <CardHeader title='Cancelled 2Do' titleTypographyProps={{ variant: 'h6' }} />
-            <CardCancelled pageName='cancelled' todos={cancelledTodos}/>
+            <CardCancelled pageName='cancelled' todos={cancelledTodos} />
           </Card>
         </Grid>
       </Grid>
