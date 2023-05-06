@@ -1,57 +1,52 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardCancelled from 'src/views/cards/TodoCard';
+import { TimerOff } from 'mdi-material-ui';
 
-// ** MUI Imports
-
-import Grid from '@mui/material/Grid'
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardCancelled from 'src/views/cards/TodoCard'
-import { TimerOff } from 'mdi-material-ui'
-
-import { useAccount, useSigner, useContract, useProvider } from 'wagmi'
-import WalletNotConnected from 'src/views/WalletConnected'
-import { abi, contractAddress } from 'src/constant'
+import { useAccount, useSigner, useContract, useProvider } from 'wagmi';
+import WalletNotConnected from 'src/views/WalletConnected';
+import { abi, contractAddress } from 'src/constant';
 
 const Cancelled = () => {
-  const { address, isConnected } = useAccount()
-  const { data: signer } = useSigner()
-  const [cancelledTodos, setCancelledTodos] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const provider = useProvider()
+  const { address, isConnected } = useAccount();
+  const { data: signer } = useSigner();
+  const [cancelledTodos, setCancelledTodos] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const provider = useProvider();
 
-  const getProviderOrSigner = needSigner => {
+  const getProviderOrSigner = (needSigner) => {
     if (needSigner) {
-      return signer
+      return signer;
     } else {
-      return provider
+      return provider;
     }
-  }
-
-  // contract
+  };
 
   const contract = useContract({
     address: contractAddress,
     abi: abi,
-    signerOrProvider: getProviderOrSigner(signer)
-  })
+    signerOrProvider: getProviderOrSigner(signer),
+  });
 
   const getCancelledTodos = async () => {
     try {
-      setIsLoading(true)
-      const _cancelledTodos = await contract.getTodosByStatus(4)
-      setCancelledTodos(_cancelledTodos)
-      setIsLoading(false)
+      setIsLoading(true);
+      const _cancelledTodos = await contract.getTodosByStatus(4);
+      setCancelledTodos(_cancelledTodos);
+      setIsLoading(false);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
-    if (!signer) return
+    if (!signer) return;
     if (cancelledTodos.lenght !== [] && cancelledTodos.lenght !== 0) {
-      getCancelledTodos()
+      getCancelledTodos();
     }
-  }, [signer, cancelledTodos])
+  }, [signer, cancelledTodos]);
 
   if (isConnected) {
     return (
@@ -63,10 +58,10 @@ const Cancelled = () => {
           </Card>
         </Grid>
       </Grid>
-    )
+    );
   } else {
-    return <WalletNotConnected isConnected={isConnected} />
+    return <WalletNotConnected isConnected={isConnected} />;
   }
-}
+};
 
-export default Cancelled
+export default Cancelled;

@@ -1,59 +1,54 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import CardHeader from '@mui/material/CardHeader';
 
-// ** MUI Imports
-
-import Grid from '@mui/material/Grid'
-import Link from '@mui/material/Link'
-import Card from '@mui/material/Card'
-import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
-
-import CardPending from 'src/views/cards/TodoCard'
-import { useAccount, useSigner, useContract, useProvider } from 'wagmi'
-import WalletNotConnected from 'src/views/WalletConnected'
-import { abi, contractAddress } from 'src/constant'
+import CardPending from 'src/views/cards/TodoCard';
+import { useAccount, useSigner, useContract, useProvider } from 'wagmi';
+import WalletNotConnected from 'src/views/WalletConnected';
+import { abi, contractAddress } from 'src/constant';
 
 const Pending = () => {
-  const { address, isConnected } = useAccount()
-  const { data: signer } = useSigner()
-  const [pendingTodos, setPendingTodos] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const provider = useProvider()
+  const { address, isConnected } = useAccount();
+  const { data: signer } = useSigner();
+  const [pendingTodos, setPendingTodos] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const provider = useProvider();
 
-  const getProviderOrSigner = needSigner => {
+  const getProviderOrSigner = (needSigner) => {
     if (needSigner) {
-      return signer
+      return signer;
     } else {
-      return provider
+      return provider;
     }
-  }
-
-  // contract
+  };
 
   const contract = useContract({
     address: contractAddress,
     abi: abi,
-    signerOrProvider: getProviderOrSigner(signer)
-  })
+    signerOrProvider: getProviderOrSigner(signer),
+  });
 
   const getPendingTodos = async () => {
     try {
-      setIsLoading(true)
-      const _pendingTodos = await contract.getTodosByStatus(3)
-      setPendingTodos(_pendingTodos)
-      setIsLoading(false)
+      setIsLoading(true);
+      const _pendingTodos = await contract.getTodosByStatus(3);
+      setPendingTodos(_pendingTodos);
+      setIsLoading(false);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
-    if (!signer) return
+    if (!signer) return;
 
     if (pendingTodos.lenght !== [] && pendingTodos.lenght !== 0) {
-      getPendingTodos()
+      getPendingTodos();
     }
-  }, [signer, pendingTodos])
+  }, [signer, pendingTodos]);
 
   if (isConnected) {
     return (
@@ -65,10 +60,10 @@ const Pending = () => {
           </Card>
         </Grid>
       </Grid>
-    )
+    );
   } else {
-    return <WalletNotConnected isConnected={isConnected} />
+    return <WalletNotConnected isConnected={isConnected} />;
   }
-}
+};
 
-export default Pending
+export default Pending;
