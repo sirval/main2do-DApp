@@ -28,18 +28,29 @@ const TodoCard = props => {
   // }
 
 const showTodos = (todo) => {
-  return(
-    <Grid key={todo?.id} item xs={12} sm={6} md={4}>
-      <CardTwitter 
-        pageName={props.pageName}
-        title={todo?.title}
-        description={todo?.description}
-        todoTime={todo?.todoTime}
-        priority={todo?.priority}
-        status={todo?.status}
-      />
-    </Grid>
-  )
+  let todoStatus = parseInt((todo?.status ?? 0).toString())
+  if (todoStatus !== 0) {
+    return (
+      <Grid key={todo?.id} item xs={12} sm={6} md={4}>
+        <CardTwitter 
+          pageName={props.pageName}
+          title={todo?.title}
+          description={todo?.description}
+          todoTime={todo?.todoTime}
+          priority={todo?.priority}
+          status={todo?.status}
+        />
+      </Grid>
+      
+    )
+  }else{
+
+    return(
+      <Grid key={todo?.id} item xs={12} sm={6} md={4}>
+        <h4>No Available Todos </h4>
+      </Grid>
+    )
+  }
 }
 
   return (

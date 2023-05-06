@@ -187,7 +187,7 @@ const NewTodo = ({signer, contract, provider}) => {
           </Grid>
           <Grid item xs={12}>
             <Button type='submit' variant='contained' sx={{ marginRight: 3.5 }}>
-              Save Changes
+              Save Todo
             </Button>
             <Button type='reset' variant='outlined' color='secondary' onClick={() => setSelectedDate(null)}>
               Reset

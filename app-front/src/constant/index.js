@@ -1,4 +1,4 @@
-export const contractAddress = '0x02af9251Be9012EF058582c5917DC948DF5A5058'
+export const contractAddress = '0xdDF535534cCAEF86e7881524cF0f9c9be77A8815';
 
 export const abi = [
   {
@@ -8,17 +8,17 @@ export const abi = [
         indexed: false,
         internalType: 'address',
         name: 'user',
-        type: 'address'
+        type: 'address',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'todoId',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'NewTodo',
-    type: 'event'
+    type: 'event',
   },
   {
     anonymous: false,
@@ -27,17 +27,17 @@ export const abi = [
         indexed: false,
         internalType: 'uint256',
         name: 'todoId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'cancelled',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'toDoCancelled',
-    type: 'event'
+    type: 'event',
   },
   {
     anonymous: false,
@@ -46,17 +46,17 @@ export const abi = [
         indexed: false,
         internalType: 'uint256',
         name: 'todoId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'completed',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'toDoCompleted',
-    type: 'event'
+    type: 'event',
   },
   {
     anonymous: false,
@@ -65,17 +65,17 @@ export const abi = [
         indexed: false,
         internalType: 'uint256',
         name: 'todoId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'ongoing',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'toDoOngoing',
-    type: 'event'
+    type: 'event',
   },
   {
     anonymous: false,
@@ -84,61 +84,106 @@ export const abi = [
         indexed: false,
         internalType: 'uint256',
         name: 'todoId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'pending',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'toDoPending',
-    type: 'event'
+    type: 'event',
   },
   {
     inputs: [
       {
         internalType: 'uint256',
         name: 'todoId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
         name: 'isCancelled',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'cancelTodo',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     inputs: [
       {
         internalType: 'uint256',
         name: 'todoId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
         name: 'isCompleted',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'completeTodo',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getTodos',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'string',
+            name: 'title',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'todoTime',
+            type: 'string',
+          },
+          {
+            internalType: 'uint256',
+            name: 'priority',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'status',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct Doit.ToDo[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [
       {
         internalType: 'uint256',
         name: 'status',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'getTodosByStatus',
     outputs: [
@@ -147,109 +192,109 @@ export const abi = [
           {
             internalType: 'uint256',
             name: 'id',
-            type: 'uint256'
+            type: 'uint256',
           },
           {
             internalType: 'string',
             name: 'title',
-            type: 'string'
+            type: 'string',
           },
           {
             internalType: 'string',
             name: 'description',
-            type: 'string'
+            type: 'string',
           },
           {
             internalType: 'string',
             name: 'todoTime',
-            type: 'string'
+            type: 'string',
           },
           {
             internalType: 'uint256',
             name: 'priority',
-            type: 'uint256'
+            type: 'uint256',
           },
           {
             internalType: 'uint256',
             name: 'status',
-            type: 'uint256'
-          }
+            type: 'uint256',
+          },
         ],
         internalType: 'struct Doit.ToDo[]',
         name: '',
-        type: 'tuple[]'
-      }
+        type: 'tuple[]',
+      },
     ],
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     inputs: [
       {
         internalType: 'string',
         name: 'title',
-        type: 'string'
+        type: 'string',
       },
       {
         internalType: 'string',
         name: 'description',
-        type: 'string'
+        type: 'string',
       },
       {
         internalType: 'string',
         name: 'todoTime',
-        type: 'string'
+        type: 'string',
       },
       {
         internalType: 'uint256',
         name: 'priority',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
         name: 'status',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'newTodo',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     inputs: [
       {
         internalType: 'uint256',
         name: 'todoId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
         name: 'isOngoing',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'ongoingTodo',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     inputs: [
       {
         internalType: 'uint256',
         name: 'todoId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
         name: 'isPending',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'pendingTodo',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function'
-  }
-]
+    type: 'function',
+  },
+];

@@ -9,43 +9,35 @@ import CardContent from '@mui/material/CardContent'
 import Heart from 'mdi-material-ui/Heart'
 import Facebook from 'mdi-material-ui/Facebook'
 import ShareVariant from 'mdi-material-ui/ShareVariant'
+import { TimerSandComplete, TimerSandEmpty, TimerSandPaused, TimerOff } from 'mdi-material-ui'
 
-const CardFacebook = () => {
+
+const CardFacebook = (props) => {
+  
+  const cardIcon = () => {
+    if(props.cardDetail.icon === 'TimerSandComplete') return  <TimerSandComplete sx={{ marginRight: 2.5 }} />
+    if(props.cardDetail.icon === 'TimerSandEmpty') return  <TimerSandEmpty sx={{ marginRight: 2.5 }} />
+    if(props.cardDetail.icon === 'TimerSandPaused') return  <TimerSandPaused sx={{ marginRight: 2.5 }} />
+    if(props.cardDetail.icon === 'TimerOff') return  <TimerOff sx={{ marginRight: 2.5 }} />
+  }
   return (
-    <Card sx={{ border: 0, boxShadow: 0, color: 'common.white', backgroundColor: 'primary.main' }}>
+    <Card sx={{ border: 0, boxShadow: 0, color: 'common.white', backgroundColor: `${props.cardDetail.color}` }}>
       <CardContent sx={{ padding: theme => `${theme.spacing(3.25, 5, 4.5)} !important` }}>
         <Typography
           variant='h6'
           sx={{ display: 'flex', marginBottom: 2.75, alignItems: 'center', color: 'common.white' }}
         >
-          <Facebook sx={{ marginRight: 2.5 }} />
-          Facebook Card
+         {cardIcon()}
+          {props.cardDetail.name}
         </Typography>
-        <Typography variant='body2' sx={{ marginBottom: 3, color: 'common.white' }}>
-          You’ve read about the importance of being courageous, rebellious and imaginative. These are all vital
-          ingredients in an effective.
-        </Typography>
+        
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
-            <Avatar alt='Eugene Clarke' src='/images/avatars/1.png' sx={{ width: 34, height: 34, marginRight: 2.75 }} />
             <Typography variant='body2' sx={{ color: 'common.white' }}>
-              Eugene Clarke
+              Total {props.cardDetail.name, `: ${props.cardDetail.total}`}
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mr: 3.5 }}>
-              <Heart sx={{ marginRight: 1.25 }} />
-              <Typography variant='body2' sx={{ color: 'common.white' }}>
-                3.2k
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ShareVariant sx={{ marginRight: 1.25 }} />
-              <Typography variant='body2' sx={{ color: 'common.white' }}>
-                49
-              </Typography>
-            </Box>
-          </Box>
+          
         </Box>
       </CardContent>
     </Card>

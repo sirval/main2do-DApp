@@ -1,51 +1,54 @@
 // ** Icon imports
-import Table from 'mdi-material-ui/Table'
-import HomeOutline from 'mdi-material-ui/HomeOutline'
-import FormatLetterCase from 'mdi-material-ui/FormatLetterCase'
-import AccountCogOutline from 'mdi-material-ui/AccountCogOutline'
-import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
-import { TimerSandComplete, TimerSandEmpty, TimerSandPaused, TimerOff } from 'mdi-material-ui'
+import HomeOutline from 'mdi-material-ui/HomeOutline';
+import AccountCogOutline from 'mdi-material-ui/AccountCogOutline';
+import {
+  TimerSandComplete,
+  TimerSandEmpty,
+  TimerSandPaused,
+  TimerOff,
+  AccountSupervisor,
+} from 'mdi-material-ui';
 
 const navigation = () => {
   return [
     {
       title: 'Home',
       icon: HomeOutline,
-      path: '/'
+      path: '/',
     },
     {
       title: 'New Todo',
       icon: AccountCogOutline,
-      path: '/new-todo'
+      path: '/new-todo',
     },
     {
       title: 'Ongoing',
       path: '/status/ongoing',
-      icon: TimerSandEmpty
+      icon: TimerSandEmpty,
     },
 
     {
       title: 'Completed',
       icon: TimerSandComplete,
-      path: '/status/completed'
+      path: '/status/completed',
     },
     {
       title: 'Pending',
       icon: TimerSandPaused,
-      path: '/status/pending'
+      path: '/status/pending',
     },
     {
       title: 'Cancelled',
       icon: TimerOff,
-      path: '/status/cancelled'
-    }
+      path: '/status/cancelled',
+    },
 
-    // {
-    //   icon: CubeOutline,
-    //   title: 'Form Layouts',
-    //   path: '/form-layouts'
-    // }
-  ]
-}
+    {
+      title: 'Hire Me',
+      icon: AccountSupervisor,
+      path: 'https://drive.google.com/file/d/1sFAXP9xnJ1eyUhAxppmubFZ0tFwvTXPA/view?usp=sharing',
+    },
+  ];
+};
 
-export default navigation
+export default navigation;
