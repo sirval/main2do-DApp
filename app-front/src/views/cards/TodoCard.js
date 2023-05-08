@@ -39,6 +39,8 @@ const showTodos = (todo) => {
           todoTime={todo?.todoTime}
           priority={todo?.priority}
           status={todo?.status}
+          id={((parseInt(todo?.id, 10) || 0) + 1).toString()} //add 1 to the todo ID so the modal in CardTwitter with open prop declared as boolean will not have 0 as value and return false
+          contract = {props.contract}
         />
       </Grid>
       

@@ -56,7 +56,11 @@ const Pending = () => {
         <Grid item xs={12}>
           <Card>
             <CardHeader title='Pending 2Do' titleTypographyProps={{ variant: 'h6' }} />
-            <CardPending pageName='pending' todos={pendingTodos} />
+            {isLoading ? (
+              <CardPending pageName='pending' todos={pendingTodos} />
+            ) : (
+              <h3>Loading...</h3>
+            )}
           </Card>
         </Grid>
       </Grid>

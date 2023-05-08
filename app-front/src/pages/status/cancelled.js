@@ -54,7 +54,11 @@ const Cancelled = () => {
         <Grid item xs={12}>
           <Card>
             <CardHeader title='Cancelled 2Do' titleTypographyProps={{ variant: 'h6' }} />
-            <CardCancelled pageName='cancelled' todos={cancelledTodos} />
+            {isLoading ? (
+              <CardCancelled pageName='cancelled' todos={cancelledTodos} />
+            ) : (
+              <h3>Loading...</h3>
+            )}
           </Card>
         </Grid>
       </Grid>

@@ -5,10 +5,7 @@ contract Doit {
 
     //event definition
     event NewTodo(address user, uint todoId);
-    event toDoCompleted(uint todoId, uint256 completed);
-    event toDoCancelled(uint todoId, uint256 cancelled);
-    event toDoPending(uint todoId, uint256 pending);
-    event toDoOngoing(uint todoId, uint256 ongoing);
+    event changeTodoStatus(uint todoId, uint256 status);
 
     //structure definition
     struct ToDo{
@@ -39,7 +36,7 @@ contract Doit {
             emit NewTodo(msg.sender, todoId);
     }
 
-    //TODO: get ongoing todos
+    //TODO: get todos by status
     function getTodosByStatus(uint256 status) external view returns (ToDo[] memory){
         //define a temporary array to hold ongoing todos
         ToDo[] memory temp_array = new ToDo[](todos.length);
@@ -60,35 +57,28 @@ contract Doit {
         return result;
     }
 
-    //TODO: mark todo as completed
-    function completeTodo(uint todoId, uint256 isCompleted) external {
-        if(Owner[todoId] == msg.sender){
-            todos[todoId].status = isCompleted;
-            emit toDoCompleted(todoId, isCompleted);
+    //TODO: get all todos
+    function getTodos() external view returns (ToDo[] memory){
+        ToDo[] memory temp_array = new ToDo[](todos.length);
+        uint counter = 0;
+        for (uint256 i = 0; i < todos.length; i++) {
+            if(Owner[i] == msg.sender){
+                temp_array[counter] = todos[i];
+                counter++;
+            }
         }
+        ToDo[] memory result = new ToDo[](counter);
+        for (uint i = 0; i < counter; i++) {
+            result[i] = temp_array[i];
+        }
+        return result;
     }
 
-    //TODO: mark todo as ongoing
-    function ongoingTodo(uint todoId, uint256 isOngoing) external {
-        if(Owner[todoId] == msg.sender){
-            todos[todoId].status = isOngoing;
-            emit toDoOngoing(todoId, isOngoing);
-        }
-    }
-
-    //TODO: mark todo as pending
-    function pendingTodo(uint todoId, uint256 isPending) external {
-        if(Owner[todoId] == msg.sender){
-            todos[todoId].status = isPending;
-            emit toDoPending(todoId, isPending);
-        }
-    }
-
-    //TODO: mark todo as cancelled
-    function cancelTodo(uint todoId, uint256 isCancelled) external{
-        if(Owner[todoId] == msg.sender){
-            todos[todoId].status = isCancelled;
-            emit toDoCancelled(todoId, isCancelled);
+    //TODO: update todo status
+    function updateTodoStatus(uint _todoId, uint256 _status) external {
+        if(Owner[_todoId] == msg.sender){
+            todos[_todoId].status = _status;
+            emit changeTodoStatus(_todoId, _status);
         }
     }
 

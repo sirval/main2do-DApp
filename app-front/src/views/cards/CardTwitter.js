@@ -21,6 +21,8 @@ import Button from '@mui/material/Button';
 import { Timer, TimerSandEmpty, TimerSandPaused, TimerOff } from 'mdi-material-ui';
 
 import Modal from '@mui/material/Modal';
+import { useAccount, useSigner, useContract, useProvider } from 'wagmi';
+import { abi, contractAddress } from 'src/constant';
 
 const style = {
   position: 'absolute',
@@ -34,9 +36,21 @@ const style = {
   p: 4,
 };
 const CardTwitter = (props) => {
+ 
+  const [selectedTodoId, setSelectedTodoId] = useState(null);
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleOpen = (id) => {
+    setSelectedTodoId(id);
+  };
+
+  const handleClose = () => {
+    setSelectedTodoId(null);
+    // setOpen(false);
+  };
   // console.log(props)
   const pageName = () => {
     if (props.pageName == 'cancelled') {
@@ -72,11 +86,26 @@ const CardTwitter = (props) => {
     if (todo_status === 2) return 'Completed';
     if (todo_status === 3) return 'Pending';
     if (todo_status === 4) return 'Cancelled';
-    // uint256 status // 1=ongoing, 2=completed, 3=pending, 4=cancelled
   };
 
-  const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({});
+  const { address, isConnected } = useAccount();
+  const { data: signer } = useSigner();
+  const provider = useProvider();
+
+  const getProviderOrSigner = (needSigner) => {
+    if (needSigner) {
+      return signer;
+    } else {
+      return provider;
+    }
+  };
+
+  const contract = useContract({
+    address: contractAddress,
+    abi: abi,
+    signerOrProvider: getProviderOrSigner(signer),
+  });
+
 
   const handleFormSubmit = (evt) => {
     evt.preventDefault();
@@ -91,7 +120,34 @@ const CardTwitter = (props) => {
 
       return;
     }
-    console.log(formData);
+    //return the actual value of the ID by subtracting it by 1
+    //this was done to make sure the modal does not have open as 0 which will cause it not to open
+    let key = {
+      todoId: selectedTodoId - 1
+    };
+    if(key.todoId === undefined){
+      alert('Form not submitted. Try again')
+    }
+   
+     //make rpc call
+     try{
+      setIsLoading(true)
+      contract.updateTodoStatus(
+        key.todoId,
+        formData.status
+      )
+      .then((response) => {
+        setIsLoading(false)
+        alert('Todo status successfully changed')
+        setFormData({})
+        setSelectedTodoId(null)
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+    }catch(err){
+      console.error(err)
+    }
   };
 
   const handleChange = (evt) => {
@@ -147,9 +203,10 @@ const CardTwitter = (props) => {
             justifyContent: 'space-between',
           }}
         >
-          <Button onClick={handleOpen}>Update Status</Button>
+          <Button onClick={() => handleOpen(props.id)}>Update Status</Button>
+
           <Modal
-            open={open}
+            open={Boolean(selectedTodoId)}
             onClose={handleClose}
             aria-labelledby='modal-modal-title'
             aria-describedby='modal-modal-description'
@@ -177,8 +234,10 @@ const CardTwitter = (props) => {
                     </FormControl>
                   </Grid>
 
+                 
+
                   <Grid item xs={12}>
-                    <Button variant='contained' sx={{ marginRight: 3.5 }}>
+                    <Button type='submit' variant='contained' sx={{ marginRight: 3.5 }}>
                       Update Status
                     </Button>
                     <Button variant='outlined' color='secondary' onClick={handleClose}>
