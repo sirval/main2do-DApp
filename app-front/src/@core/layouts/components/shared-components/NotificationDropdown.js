@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -14,10 +14,16 @@ import MuiMenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 
 // ** Icons Imports
-import BellOutline from 'mdi-material-ui/BellOutline'
+import {BellOutline, TimerSandComplete, TimerSandEmpty, TimerSandPaused, TimerOff } from 'mdi-material-ui'
 
 // ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
+
+import { useAccount, useContract, useSigner, useProvider } from 'wagmi';
+import WalletNotConnected from 'src/views/WalletConnected';
+import { contractAddress, abi } from 'src/constant';
+import blockies from 'blockies';
+
 
 // ** Styled Menu component
 const Menu = styled(MuiMenu)(({ theme }) => ({
@@ -79,6 +85,7 @@ const MenuItemSubtitle = styled(Typography)({
   textOverflow: 'ellipsis'
 })
 
+
 const NotificationDropdown = () => {
   // ** States
   const [anchorEl, setAnchorEl] = useState(null)
@@ -94,6 +101,91 @@ const NotificationDropdown = () => {
     setAnchorEl(null)
   }
 
+  //Smart Contract Interface
+
+  const { data: signer } = useSigner();
+
+  const provider = useProvider();
+
+  const { address, isConnected } = useAccount();
+  const [allTodos, setAllTodos] = useState([]);
+  const [cancelledTodos, setCancelledTodos] = useState([]);
+  const [completedTodos, setCompletedTodos] = useState([]);
+  const [ongoingTodos, setOngoingTodos] = useState([]);
+  const [pendingTodos, setPendingTodos] = useState([]);
+
+  const getProviderOrSigner = (needSigner) => {
+      if (needSigner) {
+        return signer;
+      } else {
+        return provider;
+      }
+  };
+
+  const contract = useContract({
+    address: contractAddress,
+    abi: abi,
+    signerOrProvider: getProviderOrSigner(signer),
+  });
+
+
+
+  const getAllTodos = async () => {
+    try {
+      const _allTodos = await contract.getTodos();
+      setAllTodos(_allTodos);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getOngoingTodos = async () => {
+    try {
+      const _ongoingTodos = await contract.getTodosByStatus(1);
+      setOngoingTodos(_ongoingTodos);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getCompletedTodos = async () => {
+    try {
+      const _completedTodos = await contract.getTodosByStatus(2);
+      setCompletedTodos(_completedTodos);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getCancelledTodos = async () => {
+    try {
+      const _cancelledTodos = await contract.getTodosByStatus(4);
+      setCancelledTodos(_cancelledTodos);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getPendingTodos = async () => {
+    try {
+      const _pendingTodos = await contract.getTodosByStatus(3);
+      setPendingTodos(_pendingTodos);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (!signer) return;
+    if (allTodos.lenght !== [] && allTodos.lenght !== 0) {
+      getAllTodos();
+      getCancelledTodos();
+      getCompletedTodos();
+      getOngoingTodos();
+      getPendingTodos();
+    }
+  }, [signer, allTodos]);
+
   const ScrollWrapper = ({ children }) => {
     if (hidden) {
       return <Box sx={{ ...styles, overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>
@@ -103,7 +195,7 @@ const NotificationDropdown = () => {
       )
     }
   }
-
+  
   return (
     <Fragment>
       <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
@@ -121,7 +213,7 @@ const NotificationDropdown = () => {
             <Typography sx={{ fontWeight: 600 }}>Notifications</Typography>
             <Chip
               size='small'
-              label='8 New'
+              label={`${allTodos.length} New`}
               color='primary'
               sx={{ height: 20, fontSize: '0.75rem', fontWeight: 500, borderRadius: '10px' }}
             />
@@ -130,88 +222,85 @@ const NotificationDropdown = () => {
         <ScrollWrapper>
           <MenuItem onClick={handleDropdownClose}>
             <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <Avatar alt='Flora' src='/images/avatars/4.png' />
+              <TimerSandEmpty sx={{ marginRight: 2.5 }} />  
               <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>Congratulation Flora! 🎉</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>Won the monthly best seller badge</MenuItemSubtitle>
+                <MenuItemTitle>Ongoing Todo </MenuItemTitle>
+                <MenuItemSubtitle variant='body2'>Created By {address}</MenuItemSubtitle>
               </Box>
               <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                Today
+              <Chip
+              size='small'
+              label={`${ongoingTodos.length}`}
+              color='primary'
+              sx={{ height: 20, fontSize: '0.75rem', fontWeight: 500, borderRadius: '10px' }}
+            />
               </Typography>
             </Box>
           </MenuItem>
           <MenuItem onClick={handleDropdownClose}>
             <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <Avatar sx={{ color: 'common.white', backgroundColor: 'primary.main' }}>VU</Avatar>
+              <TimerSandComplete sx={{ marginRight: 2.5 }} />  
               <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>New user registered.</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>5 hours ago</MenuItemSubtitle>
+                <MenuItemTitle>Completed Todo </MenuItemTitle>
+                <MenuItemSubtitle variant='body2'>Created By {address}</MenuItemSubtitle>
               </Box>
               <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                Yesterday
+              <Chip
+              size='small'
+              label={`${completedTodos.length}`}
+              color='primary'
+              sx={{ height: 20, fontSize: '0.75rem', fontWeight: 500, borderRadius: '10px' }}
+            />
               </Typography>
             </Box>
           </MenuItem>
           <MenuItem onClick={handleDropdownClose}>
             <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <Avatar alt='message' src='/images/avatars/5.png' />
+              <TimerSandPaused sx={{ marginRight: 2.5 }} />  
               <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>New message received 👋🏻</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>You have 10 unread messages</MenuItemSubtitle>
+                <MenuItemTitle>Pending Todo </MenuItemTitle>
+                <MenuItemSubtitle variant='body2'>Created By {address}</MenuItemSubtitle>
               </Box>
               <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                11 Aug
+              <Chip
+              size='small'
+              label={`${pendingTodos.length}`}
+              color='primary'
+              sx={{ height: 20, fontSize: '0.75rem', fontWeight: 500, borderRadius: '10px' }}
+            />
               </Typography>
             </Box>
           </MenuItem>
           <MenuItem onClick={handleDropdownClose}>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <img width={38} height={38} alt='paypal' src='/images/misc/paypal.png' />
+          <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+              <TimerOff sx={{ marginRight: 2.5 }} />  
               <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>Paypal</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>Received Payment</MenuItemSubtitle>
+                <MenuItemTitle>Cancelled Todo </MenuItemTitle>
+                <MenuItemSubtitle variant='body2'>Created By {address}</MenuItemSubtitle>
               </Box>
               <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                25 May
+              <Chip
+              size='small'
+              label={`${cancelledTodos.length}`}
+              color='primary'
+              sx={{ height: 20, fontSize: '0.75rem', fontWeight: 500, borderRadius: '10px' }}
+            />
               </Typography>
             </Box>
           </MenuItem>
-          <MenuItem onClick={handleDropdownClose}>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <Avatar alt='order' src='/images/avatars/3.png' />
-              <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>Revised Order 📦</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>New order revised from john</MenuItemSubtitle>
-              </Box>
-              <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                19 Mar
-              </Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={handleDropdownClose}>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <img width={38} height={38} alt='chart' src='/images/misc/chart.png' />
-              <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>Finance report has been generated</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>25 hrs ago</MenuItemSubtitle>
-              </Box>
-              <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                27 Dec
-              </Typography>
-            </Box>
-          </MenuItem>
+          
+          
         </ScrollWrapper>
         <MenuItem
           disableRipple
           sx={{ py: 3.5, borderBottom: 0, borderTop: theme => `1px solid ${theme.palette.divider}` }}
         >
-          <Button fullWidth variant='contained' onClick={handleDropdownClose}>
-            Read All Notifications
-          </Button>
+          
         </MenuItem>
       </Menu>
     </Fragment>
   )
+  
 }
 
 export default NotificationDropdown
