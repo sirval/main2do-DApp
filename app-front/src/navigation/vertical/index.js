@@ -46,7 +46,8 @@ const navigation = () => {
     {
       title: 'Hire Me',
       icon: AccountSupervisor,
-      path: 'https://drive.google.com/file/d/1sFAXP9xnJ1eyUhAxppmubFZ0tFwvTXPA/view?usp=sharing',
+      // path: 'https://drive.google.com/file/d/1sFAXP9xnJ1eyUhAxppmubFZ0tFwvTXPA/view?usp=sharing',
+      path: 'https://drive.google.com/file/d/1Tx5XSwKXKzsHA1l_mv8b33XdVAszgAz9/view?usp=sharing',
     },
   ];
 };
